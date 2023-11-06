@@ -27,7 +27,11 @@ def main():
         data = data.split(" ")
         cmd = data[0]
 
-        if cmd == "":
+        if cmd == "UPLOAD":
+            # code for adding file to upload
+            client.send(cmd.encode(FORMAT))
+        elif cmd == "DELETE":
+            # code for adding name of file to be deleted
             client.send(cmd.encode(FORMAT))
         elif cmd == "LOGOUT":
             client.send(cmd.encode(FORMAT))

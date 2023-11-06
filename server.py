@@ -14,6 +14,7 @@ SERVER_PATH = "server"
 
 def handle_client (conn,addr):
     print(f"NEW CONNECTION: {addr} connected.")
+    conn.send("OK@Welcome to the server".encode(FORMAT))
     
     while True:
         data = conn.recv(SIZE).decode(FORMAT)
@@ -24,6 +25,10 @@ def handle_client (conn,addr):
 
         if cmd == "LOGOUT":
             break
+        elif cmd == "UPLOAD":
+            # code for receiveing a file
+        elif cmd == "DELETE":
+            # code for deleting a file
 
         
 
