@@ -60,6 +60,8 @@ def main():
         elif cmd == "LOGOUT":
             client.send(cmd.encode(FORMAT))
             break
+        else:
+            print("Invalid command. Please use UPLOAD, DELETE, or LOGOUT.")
 
     print("Disconnected from the server.")
     client.close()
