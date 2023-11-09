@@ -23,11 +23,29 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
             if cmd == "LOGOUT":
                 break
             elif cmd == "UPLOAD":
-                # Code for receiving a file
-                break
+                filename = data[1]
+                file_path = os.path.join(SERVER_PATH, filename)
+
+                with open(file_path, "wb") as file:
+                    while True:
+                        data = self.request.recv(1024)
+                        if not data:
+                            break
+                        file.write(data)
+
+                send_data += "File uploaded successfully"
+                self.request.sendall(send_data.encode(FORMAT))
             elif cmd == "DELETE":
-                # Code for deleting a file
-                break
+                filename = data[1]
+                file_path = os.path.join(SERVER_PATH, filename)
+
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+                    send_data += f"File {filename} deleted successfully"
+                else:
+                    send_data += f"File {filename} does not exist"
+
+                self.request.sendall(send_data.encode(FORMAT))
         
         print(f"{self.client_address} disconnected")
 
