@@ -1,50 +1,40 @@
 # Author : Nova Thomas
 
-from cgitb import handler
+import socketserver
 import os
-import socket
-import threading
 
-IP = "localhost" ### gethostname()
+IP = "localhost"
 PORT = 4450
-ADDR = (IP,PORT)
-SIZE = 1024
+ADDR = (IP, PORT)
 FORMAT = "utf-8"
 SERVER_PATH = "server"
 
-def handle_client (conn,addr):
-    print(f"NEW CONNECTION: {addr} connected.")
-    conn.send("OK@Welcome to the server".encode(FORMAT))
-    
-    while True:
-        data = conn.recv(SIZE).decode(FORMAT)
-        data = data.split("@")
-        cmd = data[0]
+class MyTCPHandler(socketserver.BaseRequestHandler):
+    def handle(self):
+        print(f"NEW CONNECTION: {self.client_address} connected.")
+        self.request.sendall("OK@Welcome to the server".encode(FORMAT))
         
-        send_data = "OK@"
-
-        if cmd == "LOGOUT":
-            break
-        elif cmd == "UPLOAD":
-            # code for receiveing a file
-        elif cmd == "DELETE":
-            # code for deleting a file
-
+        while True:
+            data = self.request.recv(1024).decode(FORMAT)
+            data = data.split("@")
+            cmd = data[0]
+            send_data = "OK@"
+            
+            if cmd == "LOGOUT":
+                break
+            elif cmd == "UPLOAD":
+                # Code for receiving a file
+                break
+            elif cmd == "DELETE":
+                # Code for deleting a file
+                break
         
-
-    print(f"{addr} disconnected")
-    conn.close()
+        print(f"{self.client_address} disconnected")
 
 def main():
     print("Starting the server")
-    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind(ADDR)
-    server.listen()
-    print(f"server is listening on {IP}: {PORT}")
-    while True:
-        conn, addr = server.accept()
-        thread = threading.Thread(target = handle_client, args = (conn, addr))
-        thread.start()
+    server = socketserver.TCPServer(ADDR, MyTCPHandler)
+    server.serve_forever()
 
-    if __name__ == "__main__":
-        main()
+if __name__ == "__main__":
+    main()
